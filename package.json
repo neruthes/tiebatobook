@@ -1,0 +1,12 @@
+{
+    "name": "TiebaToBook",
+    "version": "0.0.1",
+    "repository": "https://github.com/joyneop/tiebatobook.git",
+    "readme": "README.md",
+    "license": "MIT",
+    "author": "J.N. (a.k.a. Neruthes)",
+    "description": "Read Tieba threads with progress tracking.",
+    "dependencies": {
+        "request": "*"
+    }
+}
