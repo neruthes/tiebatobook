@@ -1,11 +1,11 @@
-# Tieba to Book
+# Tieba to Book (Work-In-Progress)
 
-This is a utility software which fetches a thread on Tieba and converts it into a book-like version, so that you may be able to track the reading progress.
+This is a utility software which fetches threads on Tieba and converts them into book-like versions, so that you may be able to track the reading progress.
 
 ## Installation
 
 * Clone this repository with `$ git clone https://github.com/joyneop/tiebatobook.git`.
-* Run `$ npm install .`.
+* Run `$ npm install .` to get all dependencies.
 
 ## Tracking
 
@@ -25,6 +25,7 @@ Each JSON should look like:
 
 ```json
 {
+    "largestKnownPageNumber": 1,
     "latestFetchedPageNumber": 1,
     "latestAvailableFloor": 17,
     "readingProgressFloor": 5,
@@ -41,6 +42,6 @@ These files contain tracking progress and publishing progress. Need to be persis
 
 ### Fetched HTML
 
-File: `/cache/tracking/{{ THREAD ID }}--{{ PAGE NUMBER }}.html`.
+File: `/cache/tmp/{{ THREAD ID }}--{{ PAGE NUMBER }}.html`.
 
 Simply fetched HTML files. Need to be cleared after each fetch.
