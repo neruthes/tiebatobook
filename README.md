@@ -7,6 +7,14 @@ This is a utility software which fetches threads on Tieba and converts them into
 * Clone this repository with `$ git clone https://github.com/joyneop/tiebatobook.git`.
 * Run `$ npm install .` to get all dependencies.
 
+## Using
+
+* Run `$ node prefetch.js` to build metadata.
+* Run `$ node fetch.js` to download HTML documents.
+* Run `$ node parse.js` to parse HTML documents.
+* Run `$ node server.js` to create an HTTP server.
+* Vist `http://localhost:10482/` to browse in a browser.
+
 ## Tracking
 
 Put a list of all threads you would like to track. One URL per line. One line should look like `https://tieba.baidu.com/p/5490057397`. No query string.

@@ -4,7 +4,7 @@ var uuidv4 = require('uuid/v4')
 var URL  = require('url');
 
 var oneTimeAccessToken = uuidv4();
-var indexHtml = fs.readFileSync('./localserversources/index.html').toString().replace(/6fdf6ffc-ed77-94fa-407e-a7b86ed9e59d/g, oneTimeAccessToken);
+var indexHtml = fs.readFileSync('./browser_index.html').toString().replace(/6fdf6ffc-ed77-94fa-407e-a7b86ed9e59d/g, oneTimeAccessToken);
 
 var parsePostFormData = function (formPostData) {
     return JSON.parse(
@@ -36,6 +36,8 @@ var server = http.createServer(function (req, res) {
         req.on('end', function () {
             res.setHeader('Content-Type', 'application/json');
             var formPostDataJsonObj = parsePostFormData(formPostData);
+            console.log(formPostData);
+            console.log(formPostDataJsonObj);
             var newReadingProgressFloor = formPostDataJsonObj.dataProgressFloor;
             var trackingInfoJson = JSON.parse(fs.readFileSync('./cache/tracking/' + threadId + '.json').toString());
             if (oneTimeAccessToken === formPostDataJsonObj.oneTimeAccessToken) {
@@ -65,7 +67,7 @@ var server = http.createServer(function (req, res) {
         // API endpoint: get tracking info catalog
         res.setHeader('Content-Type', 'application/json');
         res.write(fs.readFileSync('./cache/tracking/trackingList-full.json'));
-        res.end()
+        res.end();
     } else if (req.method === 'GET' && URL.parse(req.url).pathname.indexOf('/api/v1/tracking/') === 0) {
         // API endpoint: get individual tracking info
         res.setHeader('Content-Type', 'application/json');

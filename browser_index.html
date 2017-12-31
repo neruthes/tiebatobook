@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Tieba To Book</title>
+        <style>
+        /* Utilities */
+
+        .U-float-left {
+            float: left;
+        }
+
+        .U-float-right {
+            float: right;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        /* Overall */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        a:link, a:visited {
+            color: #16E;
+        }
+
+        header, article, section, footer, h1, h2, h3, h4, h5, h6, p, ul, ol, li, aside, figcaption {
+            line-height: 1.8em;
+        }
+
+        h1, h2, h3, h4, h5, h6, p, ul, ol, li {
+            margin: 15px 0;
+        }
+
+        /* Project-specific */
+
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+
+        html {
+            font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif, 'PingFang SC', 'Hiragino', 'Microsoft YaHei';
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.8em;
+        }
+
+        #area-left {
+            background: #F5F5F5;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 25vw;
+            height: 100vh;
+            overflow: scroll;
+        }
+
+        #area-right {
+            padding: 0 0 60px 25vw;
+        }
+
+        /* Contents - Area Left */
+
+        #area-left .content-list ul {
+            padding: 20px;
+            margin: 0;
+        }
+
+        #area-left .content-list li {
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 0 0 10px;
+            overflow: hidden;
+        }
+
+        #area-left .content-list li .li-inner {
+            padding: 10px;
+        }
+
+        #area-left .content-list li .li-inner[data-is-current-thread="true"] {
+            background: #DDD;
+        }
+
+        #area-left .content-list li .li-inner:hover {
+            background: #CCC;
+        }
+
+        /* Contents - Area Right */
+
+        #area-right .content-list {
+            padding: 0 60px;
+        }
+
+        #area-right .content-list .floor {
+            padding: 50px 0 60px;
+            border-bottom: 1px solid #DDD;
+        }
+
+        #area-right .content-list .floor[data-is-floor-already-read="true"] {
+            opacity: 0.4;
+        }
+
+        #area-right .content-list .floor .floor-content {
+            padding: 0 0 20px;
+        }
+
+        #area-right .content-list .floor .floor-content img {
+            max-height: 200px;
+        }
+        #area-right .content-list .floor .floor-content img.BDE_Image {
+            display: block;
+        }
+
+        #area-right .content-list .floor .floor-meta {
+            font-size: 14px;
+        }
+
+        #area-right .content-list .floor .floor-floorId {
+            float: right;
+        }
+
+        #area-right .content-list .floor .floor-setProgress {
+            color: #16E;
+            cursor: pointer;
+            opacity: 0;
+            float: left;
+        }
+
+        #area-right .content-list .floor:hover .floor-setProgress {
+            opacity: 1;
+        }
+
+        #area-right .content-list .floor .floor-setProgress:hover {
+            color: #000;
+        }
+
+        #area-right .content-footer {
+            padding: 60px;
+        }
+        </style>
+        <script type="text/javascript">
+        var oneTimeAccessToken = '6fdf6ffc-ed77-94fa-407e-a7b86ed9e59d';
+        </script>
+    </head>
+    <body>
+        <div class="overall" id="area-left">
+            <div class="content">
+                <div class="content-inner">
+                    <div class="content-header">
+                        <h1 class="site-title" id="js-SiteTitle"></h1>
+                    </div>
+                    <div class="content-list">
+                        <ul id="js-ThreadsList">
+
+                        </ul>
+                    </div>
+                    <div class="content-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overall" id="area-right" autofocus>
+            <div class="content">
+                <div class="content-inner">
+                    <div class="content-header">
+                        <h2 class="content-header-title" id="js-ThreadTitle"></h2>
+                    </div>
+                    <div class="content-list" id="js-ThreadFloors">
+                    </div>
+                    <div class="content-footer">
+                        <div class="footer">
+                            <div class="footer-inner">
+                                <footer>
+                                    <div>
+                                        Original thread: <a id="js-OriginalThread" target="_blank"></a>
+                                    </div>
+                                    <div>
+                                        Generated by <a href="https://github.com/joyneop/tiebatobook">TiebaToBook</a>.
+                                    </div>
+                                </footer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+        var app = {
+            currentThreadId: '',
+            retrievedTrackingInfoJsonCount: 0,
+            contents: {}
+        };
+        document.body.addEventListener('click', function(e) {
+            if (e.target.getAttribute('data-action-type') === 'SET_DATABASE trackingInfoJson.readingProgressFloor') {
+                // Mark a floor
+                markFloor(app.currentThreadId, e.target.getAttribute('data-floor-id'));
+                renderFloorMarking(false);
+            } else if (e.target.getAttribute('data-action-type') === 'SET_RUNTIME app.currentThreadId') {
+                // Change a thread
+                app.currentThreadId = e.target.getAttribute('data-thread-id');
+                userInterfaceInit();
+            };
+        });
+        </script>
+        <script type="text/javascript">
+        // Retieve and display meta info
+        var xhr_apiv1_catalog = new XMLHttpRequest();
+        xhr_apiv1_catalog.open('get', '/api/v1/catalog');
+        xhr_apiv1_catalog.addEventListener('load', function (e) {
+            if (e.target.status === 200) {
+                app.catalog = JSON.parse(e.target.responseText);
+                app.currentThreadId = app.catalog[0]
+                retrieveTrackingInfo();
+            } else {
+                location.reload();
+            };
+        });
+        xhr_apiv1_catalog.send();
+        </script>
+        <script type="text/javascript">
+        // In dealing with thread contents
+        var retrieveTrackingInfo = function () {
+            app.catalog.map(function (v) {
+                var xhr_apiv1_tracking = new XMLHttpRequest();
+                xhr_apiv1_tracking.__threadId = v;
+                xhr_apiv1_tracking.open('get', '/api/v1/tracking/' + v);
+                xhr_apiv1_tracking.addEventListener('load', function (e) {
+                    var _this = this;
+                    console.log(_this.__threadId);
+                    app.contents[_this.__threadId] = JSON.parse(_this.responseText);
+                    app.retrievedTrackingInfoJsonCount++;
+                    retrievedTrackingInfoJsonCountChangeEventHandler();
+                });
+                xhr_apiv1_tracking.send();
+            });
+        };
+        var retrievedTrackingInfoJsonCountChangeEventHandler = function () {
+            if (app.retrievedTrackingInfoJsonCount === app.catalog.length) {
+                userInterfaceInit();
+            };
+        };
+        var userInterfaceInit = function () {
+            // Left - list
+            document.getElementById('js-ThreadsList').innerHTML = app.catalog.map(function (threadId) {
+                return '<li><div class="li-inner" data-thread-id="' + threadId + '" data-action-type="SET_RUNTIME app.currentThreadId">' + app.contents[threadId].threadTitle + '</div></li>';
+            }).join('');
+            document.querySelector('.li-inner[data-thread-id="' + app.currentThreadId + '"]').setAttribute('data-is-current-thread', 'true');
+
+            // Right - contents
+            document.getElementById('js-ThreadFloors').innerHTML = Object.keys(app.contents[app.currentThreadId].contents).map(function (floorId) {
+                return (
+                    '<div class="floor" data-floor-id="' + floorId + '">' +
+                        '<div class="floor-content">' +
+                            app.contents[app.currentThreadId].contents[floorId] +
+                        '</div>' +
+                        '<div class="floor-meta">' +
+                            '<span class="floor-floorId">' +
+                                floorId + ' 楼' +
+                            '</span>' +
+                            '<span class="floor-setProgress" data-action-type="SET_DATABASE trackingInfoJson.readingProgressFloor" data-floor-id="' + floorId + '">' +
+                                '标记已阅读完毕这层楼' +
+                            '</span>' +
+                            '<div class="clear">' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>'
+                );
+            }).join('');
+
+            // Footer
+            document.getElementById('js-OriginalThread').innerHTML = 'https://tieba.baidu.com/p/' + app.currentThreadId;
+            document.getElementById('js-OriginalThread').href = 'https://tieba.baidu.com/p/' + app.currentThreadId + '?see_lz=1';
+
+            // More
+            renderFloorMarking(true);
+        };
+        var renderFloorMarking = function (shouldScroll) {
+            var listOfFloorsInCurrentThread = Object.keys(app.contents[app.currentThreadId].contents);
+            for (var i = 0; i < listOfFloorsInCurrentThread.length; i++) {
+                if (Number(document.querySelectorAll('.floor')[i].getAttribute('data-floor-id')) <= app.contents[app.currentThreadId].readingProgressFloor) {
+                    document.querySelectorAll('.floor')[i].setAttribute('data-is-floor-already-read', 'true');
+                } else {
+                    document.querySelectorAll('.floor')[i].setAttribute('data-is-floor-already-read', 'false');
+                };
+            };
+            var theFloor = app.contents[app.currentThreadId].readingProgressFloor;
+            if (shouldScroll) {
+                if (theFloor > 1) {
+                    scrollTo(0, document.querySelector('.floor[data-floor-id="' + theFloor + '"]').offsetTop + document.querySelector('.floor[data-floor-id="' + theFloor + '"]').offsetHeight - 180);
+                } else {
+                    scrollTo(0, 0);
+                }
+            };
+        };
+        var markFloor = function (threadId, floorId) {
+            // Update runtime
+            app.contents[threadId].readingProgressFloor = floorId;
+            // Update remote
+            var xhr_apiv1_tracking__threadId = new XMLHttpRequest();
+            xhr_apiv1_tracking__threadId.open('post', '/api/v1/readingProgressFloor/' + threadId);
+            xhr_apiv1_tracking__threadId.addEventListener('load', function (e) {
+                console.log(xhr_apiv1_tracking__threadId);
+            });
+            xhr_apiv1_tracking__threadId.send('oneTimeAccessToken=' + oneTimeAccessToken + '&dataProgressFloor=' + floorId);
+        };
+        </script>
+    </body>
+</html>
