@@ -25,6 +25,7 @@ Each JSON should look like:
 
 ```json
 {
+    "threadTitle": "Catch Me If You Can",
     "largestKnownPageNumber": 1,
     "latestFetchedPageNumber": 1,
     "latestAvailableFloor": 17,
