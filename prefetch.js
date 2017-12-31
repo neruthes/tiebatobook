@@ -34,7 +34,8 @@ var trackingListThreadsId = (function () {
 })();
 // Should look like [ '5490057397', '5490057398', '5490057399' ]
 
-console.log('[ARR] trackingListThreadsId: ' + trackingListThreadsId);
+console.log('[ARR] trackingListThreadsId: ' + JSON.stringify(trackingListThreadsId));
+fs.writeFileSync('./cache/tracking/trackingList-full.json', JSON.stringify(trackingListThreadsId))
 
 //
 // Build progress tracking JSON files for new threads
