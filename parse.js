@@ -33,9 +33,12 @@ urlsToFetchForThisTime.map(function (url, index) {
         var postFloors = [ '1' ];
     } else {
         // Multiple floors
-        var postFloors = fileHtmlText.match(/>\d+楼</g).map(function (v, i) {
-            return v.match(/\d+/)[0];
-        });
+        var postFloors = [ '1' ];
+        if (fileHtmlText.match(/>\d+楼</g)) {
+            postFloors = fileHtmlText.match(/>\d+楼</g).map(function (v, i) {
+                return v.match(/\d+/)[0];
+            });
+        };
     };
     postFloors.map(function (v, i) {
         trackingInfoJson.contents[v] = postContents[i];
