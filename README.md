@@ -9,6 +9,7 @@ This is a utility software which fetches threads on Tieba and converts them into
 
 ## Using
 
+* Run `$ sh _init.sh` to initialize.
 * Run `$ node prefetch.js` to build metadata.
 * Run `$ node fetch.js` to download HTML documents.
 * Run `$ node parse.js` to parse HTML documents.
