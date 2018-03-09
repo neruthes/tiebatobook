@@ -1,5 +1,8 @@
-var fs = require('fs');
-var request = require('request');
+const fs = require('fs');
+const request = require('request');
+const exec = require('child_process').exec;
+
+exec('mkdir cache/tracking; mkdir cache/tmp; mkdir cache/tmp/html;');
 
 
 // Global environment variables for debugging

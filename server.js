@@ -1,7 +1,7 @@
 var fs = require('fs');
 var http = require('http');
 var uuidv4 = require('uuid/v4')
-var URL  = require('url');
+var URL = require('url');
 
 var oneTimeAccessToken = uuidv4();
 var indexHtml = fs.readFileSync('./browser_index.html').toString().replace(/6fdf6ffc-ed77-94fa-407e-a7b86ed9e59d/g, oneTimeAccessToken);
