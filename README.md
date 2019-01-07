@@ -55,3 +55,7 @@ These files contain tracking progress and publishing progress. Need to be persis
 File: `/cache/tmp/{{ THREAD ID }}--{{ PAGE NUMBER }}.html`.
 
 Simply fetched HTML files. Need to be cleared after each fetch.
+
+## Copyright
+
+Licensed under [AGPL](https://www.gnu.org/licenses/agpl-3.0.html).
